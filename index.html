@@ -1,940 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🗳️ Vote — David vs James (once)</title>
-
-    <!-- Font & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <style>
-        /* ---------- RESET & BASE ---------- */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            margin: 0;
-            background: radial-gradient(ellipse at 30% 20%, #e8edf5 0%, #d0d9e8 100%);
-        }
-
-        /* ---------- MAIN CONTAINER ---------- */
-        .app {
-            max-width: 880px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 2.5rem;
-            padding: 2.5rem 2.5rem 2rem;
-            box-shadow: 0 30px 60px -20px rgba(0, 20, 40, 0.35),
-                0 8px 24px -6px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.25s ease;
-        }
-
-        /* ---------- HEADER ---------- */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.75rem 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .header-left .icon {
-            font-size: 2rem;
-            color: #1a2b4a;
-        }
-
-        .header-left h1 {
-            font-weight: 700;
-            font-size: 1.7rem;
-            letter-spacing: -0.02em;
-            color: #0b1a33;
-            background: linear-gradient(135deg, #0b1a33 0%, #2a4a7a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-left h1 span {
-            font-weight: 400;
-            -webkit-text-fill-color: #4a6a8a;
-            color: #4a6a8a;
-        }
-
-        .total-badge {
-            background: rgba(11, 26, 51, 0.08);
-            backdrop-filter: blur(4px);
-            padding: 0.5rem 1.2rem;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #1a2b4a;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .total-badge i {
-            color: #3a6a9a;
-            font-size: 0.85rem;
-        }
-
-        .total-badge .count {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #0b1a33;
-            min-width: 2rem;
-            text-align: center;
-        }
-
-        /* ---------- CANDIDATE GRID ---------- */
-        .candidates {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        /* ---------- CANDIDATE CARD ---------- */
-        .card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 1.8rem;
-            padding: 1.8rem 1.8rem 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-            transition: transform 0.2s ease, box-shadow 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px -8px rgba(0, 20, 40, 0.15);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 1.8rem;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), transparent 60%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        .card .accent {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            border-radius: 1.8rem 1.8rem 0 0;
-        }
-
-        .card.david .accent {
-            background: linear-gradient(90deg, #2563eb, #60a5fa);
-        }
-        .card.james .accent {
-            background: linear-gradient(90deg, #7c3aed, #a78bfa);
-        }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.6rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 0.6rem;
-            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.15);
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .card.david .avatar {
-            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-        }
-        .card.james .avatar {
-            background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-        }
-
-        .avatar i {
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .card .name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0b1a33;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.1rem;
-        }
-
-        .card .subtitle {
-            font-size: 0.8rem;
-            color: #6a7a8a;
-            font-weight: 400;
-            margin-bottom: 0.9rem;
-            letter-spacing: 0.02em;
-        }
-
-        .stats {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 0.3rem;
-            flex-wrap: wrap;
-        }
-
-        .stats .votes {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0b1a33;
-            line-height: 1;
-        }
-
-        .stats .votes-label {
-            font-size: 0.85rem;
-            font-weight: 400;
-            color: #6a7a8a;
-        }
-
-        .stats .percent {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #2a4a7a;
-            background: rgba(0, 0, 0, 0.04);
-            padding: 0.1rem 0.7rem;
-            border-radius: 40px;
-            font-feature-settings: "tnum";
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.06);
-            border-radius: 40px;
-            margin: 0.5rem 0 1rem;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-track .bar {
-            height: 100%;
-            width: 0%;
-            border-radius: 40px;
-            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            background: linear-gradient(90deg, #2563eb, #60a5fa);
-        }
-
-        .card.james .progress-track .bar {
-            background: linear-gradient(90deg, #7c3aed, #a78bfa);
-        }
-
-        /* Vote button */
-        .vote-btn {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            font-family: inherit;
-            color: #fff;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            background: #1a2b4a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-top: 0.2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .vote-btn i {
-            font-size: 0.9rem;
-            transition: transform 0.2s ease;
-        }
-
-        .vote-btn:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.2);
-        }
-
-        .vote-btn:active:not(:disabled) {
-            transform: scale(0.96);
-        }
-
-        .vote-btn:disabled {
-            opacity: 0.5;
-            transform: none !important;
-            cursor: not-allowed;
-            filter: grayscale(0.3);
-        }
-
-        .card.david .vote-btn {
-            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-        }
-        .card.david .vote-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #1e40af, #2563eb);
-        }
-
-        .card.james .vote-btn {
-            background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-        }
-        .card.james .vote-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #5b21b6, #7c3aed);
-        }
-
-        /* Voted badge / message */
-        .voted-badge {
-            display: none;
-            background: rgba(34, 197, 94, 0.12);
-            color: #15803d;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-            border-radius: 60px;
-            width: 100%;
-            text-align: center;
-            border: 1px solid rgba(34, 197, 94, 0.25);
-            backdrop-filter: blur(4px);
-            margin-top: 0.2rem;
-        }
-
-        .voted-badge i {
-            margin-right: 0.5rem;
-        }
-
-        .card.voted .voted-badge {
-            display: block;
-        }
-
-        .card.voted .vote-btn {
-            display: none;
-        }
-
-        /* ---------- TOAST / FEEDBACK ---------- */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(11, 26, 51, 0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            color: #fff;
-            padding: 0.9rem 2rem;
-            border-radius: 60px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            opacity: 0;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.4s ease;
-            pointer-events: none;
-            z-index: 999;
-            white-space: nowrap;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .toast i {
-            font-size: 1.2rem;
-        }
-        .toast .check {
-            color: #4ade80;
-        }
-        .toast .error {
-            color: #f87171;
-        }
-
-        /* ---------- FOOTER ---------- */
-        .footer {
-            margin-top: 1.5rem;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            font-size: 0.8rem;
-            color: #6a7a8a;
-        }
-
-        .footer .reset-btn {
-            background: rgba(0, 0, 0, 0.04);
-            border: none;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            font-family: inherit;
-            color: #4a5a6a;
-            cursor: pointer;
-            transition: background 0.2s ease, color 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer .reset-btn:hover {
-            background: rgba(239, 68, 68, 0.12);
-            color: #dc2626;
-        }
-
-        .footer .status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer .status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4ade80;
-            display: inline-block;
-            animation: pulse-dot 1.8s ease-in-out infinite;
-        }
-
-        .footer .status .dot.error {
-            background: #f87171;
-            animation: none;
-        }
-
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.8);
-            }
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 700px) {
-            .app {
-                padding: 1.5rem 1.2rem;
-                border-radius: 1.8rem;
-            }
-
-            .candidates {
-                grid-template-columns: 1fr;
-                gap: 1.2rem;
-            }
-
-            .header-left h1 {
-                font-size: 1.3rem;
-            }
-
-            .header-left .icon {
-                font-size: 1.5rem;
-            }
-
-            .total-badge {
-                font-size: 0.8rem;
-                padding: 0.3rem 0.9rem;
-            }
-
-            .total-badge .count {
-                font-size: 0.95rem;
-            }
-
-            .card {
-                padding: 1.5rem 1.2rem 1.2rem;
-            }
-
-            .avatar {
-                width: 64px;
-                height: 64px;
-                font-size: 2rem;
-            }
-
-            .card .name {
-                font-size: 1.3rem;
-            }
-
-            .stats .votes {
-                font-size: 1.7rem;
-            }
-
-            .stats .percent {
-                font-size: 1.1rem;
-            }
-
-            .toast {
-                font-size: 0.85rem;
-                padding: 0.7rem 1.4rem;
-                white-space: normal;
-                max-width: 90%;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .app {
-                padding: 1rem 0.8rem;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.5rem;
-            }
-
-            .header-left {
-                justify-content: center;
-            }
-
-            .total-badge {
-                justify-content: center;
-            }
-
-            .footer {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-        }
-
-        /* ---------- UTILITY ---------- */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
-        .card.vote-flash .vote-btn {
-            animation: flash-btn 0.35s ease;
-        }
-
-        @keyframes flash-btn {
-            0% {
-                transform: scale(1);
-            }
-            30% {
-                transform: scale(1.08);
-            }
-            70% {
-                transform: scale(0.96);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ===== APP ===== -->
-    <div class="app" id="app">
-
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <span class="icon" aria-hidden="true">🗳️</span>
-                <h1>Vote <span>·</span> David <span>vs</span> James</h1>
-            </div>
-            <div class="total-badge">
-                <i class="fas fa-users" aria-hidden="true"></i>
-                <span>Total votes</span>
-                <span class="count" id="totalVotes">0</span>
-            </div>
-        </header>
-
-        <!-- Candidates -->
-        <div class="candidates" id="candidatesContainer">
-            <!-- David -->
-            <div class="card david" data-candidate="david">
-                <div class="accent" aria-hidden="true"></div>
-                <div class="avatar" aria-hidden="true">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="name">David</div>
-                <div class="subtitle">Candidate #1</div>
-                <div class="stats">
-                    <span class="votes" id="davidVotes">0</span>
-                    <span class="votes-label">votes</span>
-                    <span class="percent" id="davidPercent">0%</span>
-                </div>
-                <div class="progress-track" aria-hidden="true">
-                    <div class="bar" id="davidBar" style="width: 0%;"></div>
-                </div>
-                <button class="vote-btn" id="voteDavid" data-candidate="david">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    Vote for David
-                </button>
-                <div class="voted-badge" id="votedDavidBadge">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i> You voted for David
-                </div>
-            </div>
-
-            <!-- James -->
-            <div class="card james" data-candidate="james">
-                <div class="accent" aria-hidden="true"></div>
-                <div class="avatar" aria-hidden="true">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="name">James</div>
-                <div class="subtitle">Candidate #2</div>
-                <div class="stats">
-                    <span class="votes" id="jamesVotes">0</span>
-                    <span class="votes-label">votes</span>
-                    <span class="percent" id="jamesPercent">0%</span>
-                </div>
-                <div class="progress-track" aria-hidden="true">
-                    <div class="bar" id="jamesBar" style="width: 0%;"></div>
-                </div>
-                <button class="vote-btn" id="voteJames" data-candidate="james">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    Vote for James
-                </button>
-                <div class="voted-badge" id="votedJamesBadge">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i> You voted for James
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="status">
-                <span class="dot" id="statusDot" aria-hidden="true"></span>
-                <span id="statusText">Live (local)</span>
-            </div>
-            <button class="reset-btn" id="resetBtn">
-                <i class="fas fa-rotate-right" aria-hidden="true"></i>
-                Reset all votes
-            </button>
-        </footer>
-    </div>
-
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast" role="alert" aria-live="polite">
-        <i class="fas fa-check-circle check" aria-hidden="true"></i>
-        <span id="toastMessage">Vote recorded!</span>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT (client‑side only) ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Portal | Blue & White</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        (function() {
-            'use strict';
-
-            // ---------- DOM refs ----------
-            const davidVotesEl = document.getElementById('davidVotes');
-            const jamesVotesEl = document.getElementById('jamesVotes');
-            const davidPercentEl = document.getElementById('davidPercent');
-            const jamesPercentEl = document.getElementById('jamesPercent');
-            const davidBarEl = document.getElementById('davidBar');
-            const jamesBarEl = document.getElementById('jamesBar');
-            const totalVotesEl = document.getElementById('totalVotes');
-            const voteDavidBtn = document.getElementById('voteDavid');
-            const voteJamesBtn = document.getElementById('voteJames');
-            const resetBtn = document.getElementById('resetBtn');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
-            const davidCard = document.querySelector('.card.david');
-            const jamesCard = document.querySelector('.card.james');
-
-            // ---------- Storage keys ----------
-            const VOTES_KEY = 'votesData'; // { david: number, james: number }
-            const VOTED_KEY = 'hasVoted';
-            const VOTED_CANDIDATE_KEY = 'votedCandidate';
-
-            // ---------- State ----------
-            let votes = { david: 0, james: 0 };
-            let total = 0;
-            let hasVoted = false;
-            let votedCandidate = null; // 'david' or 'james'
-            let isVoting = false;
-            let toastTimeout = null;
-
-            // ---------- Helpers ----------
-            function formatPercent(value) {
-                return Number.isFinite(value) ? Math.round(value) + '%' : '0%';
+        tailwind.config = {
+            theme: {
+                extend: { colors: { brand: { light: '#eff6ff', DEFAULT: '#2563eb', dark: '#1e40af' } } }
             }
-
-            // Load votes from localStorage
-            function loadVotes() {
-                const stored = localStorage.getItem(VOTES_KEY);
-                if (stored) {
-                    try {
-                        const parsed = JSON.parse(stored);
-                        if (typeof parsed.david === 'number' && typeof parsed.james === 'number') {
-                            votes = parsed;
-                            return;
-                        }
-                    } catch (_) { /* ignore */ }
-                }
-                votes = { david: 0, james: 0 };
-                saveVotes();
-            }
-
-            // Save votes to localStorage
-            function saveVotes() {
-                localStorage.setItem(VOTES_KEY, JSON.stringify(votes));
-            }
-
-            // Load voter status from localStorage
-            function loadVoterStatus() {
-                const voted = localStorage.getItem(VOTED_KEY);
-                if (voted === 'true') {
-                    const candidate = localStorage.getItem(VOTED_CANDIDATE_KEY);
-                    if (candidate === 'david' || candidate === 'james') {
-                        hasVoted = true;
-                        votedCandidate = candidate;
-                        return;
-                    }
-                }
-                hasVoted = false;
-                votedCandidate = null;
-            }
-
-            // Save voter status to localStorage
-            function saveVoterStatus() {
-                if (hasVoted && votedCandidate) {
-                    localStorage.setItem(VOTED_KEY, 'true');
-                    localStorage.setItem(VOTED_CANDIDATE_KEY, votedCandidate);
-                } else {
-                    localStorage.removeItem(VOTED_KEY);
-                    localStorage.removeItem(VOTED_CANDIDATE_KEY);
-                }
-            }
-
-            // Update UI with current votes and voter status
-            function updateUI() {
-                total = votes.david + votes.james;
-
-                davidVotesEl.textContent = votes.david;
-                jamesVotesEl.textContent = votes.james;
-                totalVotesEl.textContent = total;
-
-                const davidPct = total === 0 ? 0 : (votes.david / total) * 100;
-                const jamesPct = total === 0 ? 0 : (votes.james / total) * 100;
-
-                davidPercentEl.textContent = formatPercent(davidPct);
-                jamesPercentEl.textContent = formatPercent(jamesPct);
-
-                davidBarEl.style.width = davidPct + '%';
-                jamesBarEl.style.width = jamesPct + '%';
-
-                // Update buttons / badges
-                updateVoteButtons();
-            }
-
-            // Enable/disable buttons and show/hide badges
-            function updateVoteButtons() {
-                if (hasVoted && votedCandidate) {
-                    voteDavidBtn.disabled = true;
-                    voteJamesBtn.disabled = true;
-
-                    if (votedCandidate === 'david') {
-                        davidCard.classList.add('voted');
-                        jamesCard.classList.remove('voted');
-                    } else {
-                        jamesCard.classList.add('voted');
-                        davidCard.classList.remove('voted');
-                    }
-                } else {
-                    voteDavidBtn.disabled = false;
-                    voteJamesBtn.disabled = false;
-                    davidCard.classList.remove('voted');
-                    jamesCard.classList.remove('voted');
-                }
-
-                // If currently processing, disable anyway
-                if (isVoting) {
-                    voteDavidBtn.disabled = true;
-                    voteJamesBtn.disabled = true;
-                }
-            }
-
-            // Mark that the current user has voted for a candidate
-            function setVoted(candidate) {
-                hasVoted = true;
-                votedCandidate = candidate;
-                saveVoterStatus();
-                updateVoteButtons();
-            }
-
-            // Clear voter status (e.g., after reset)
-            function clearVoterStatus() {
-                hasVoted = false;
-                votedCandidate = null;
-                saveVoterStatus();
-                updateVoteButtons();
-            }
-
-            // ---------- Core actions ----------
-
-            // Cast a vote (client‑side)
-            function castVote(candidate) {
-                if (isVoting) return;
-                if (hasVoted) {
-                    showToast('❌ You have already voted!', 'error');
-                    return;
-                }
-
-                isVoting = true;
-                voteDavidBtn.disabled = true;
-                voteJamesBtn.disabled = true;
-
-                // Simulate network delay for realism
-                setTimeout(() => {
-                    // Increment vote count
-                    votes[candidate] = (votes[candidate] || 0) + 1;
-                    saveVotes();
-
-                    // Mark this user as voted
-                    setVoted(candidate);
-
-                    // Update UI
-                    updateUI();
-
-                    // Flash effect
-                    const card = document.querySelector(`.card.${candidate}`);
-                    if (card) {
-                        card.classList.remove('vote-flash');
-                        void card.offsetWidth;
-                        card.classList.add('vote-flash');
-                        setTimeout(() => card.classList.remove('vote-flash'), 400);
-                    }
-
-                    showToast(`✅ You voted for ${candidate.charAt(0).toUpperCase() + candidate.slice(1)}!`, 'success');
-
-                    isVoting = false;
-                    updateVoteButtons(); // ensure buttons reflect final state
-                }, 300); // small delay to mimic network
-            }
-
-            // Reset all votes
-            function resetVotes() {
-                if (isVoting) return;
-                if (!confirm('⚠️ Reset all votes? This will also allow you to vote again.')) return;
-
-                isVoting = true;
-                voteDavidBtn.disabled = true;
-                voteJamesBtn.disabled = true;
-
-                // Simulate network delay
-                setTimeout(() => {
-                    votes = { david: 0, james: 0 };
-                    saveVotes();
-                    clearVoterStatus();
-                    updateUI();
-                    showToast('🔄 All votes have been reset. You can vote again.', 'success');
-                    isVoting = false;
-                    updateVoteButtons();
-                }, 300);
-            }
-
-            // ---------- Toast ----------
-            function showToast(message, type = 'success') {
-                const icon = toast.querySelector('i');
-                if (type === 'success') {
-                    icon.className = 'fas fa-check-circle check';
-                } else {
-                    icon.className = 'fas fa-exclamation-circle error';
-                }
-                toastMessage.textContent = message;
-                toast.classList.add('show');
-
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
-
-            // ---------- Init ----------
-            function init() {
-                loadVotes();
-                loadVoterStatus();
-                updateUI();
-
-                // Event listeners
-                voteDavidBtn.addEventListener('click', () => castVote('david'));
-                voteJamesBtn.addEventListener('click', () => castVote('james'));
-                resetBtn.addEventListener('click', resetVotes);
-
-                // Status indicator (always green for local)
-                statusDot.className = 'dot';
-                statusText.textContent = 'Live (local)';
-
-                console.log('🗳️ Voting app initialized (client‑side, one vote per person)');
-                if (hasVoted) {
-                    console.log(`🗳️ You already voted for ${votedCandidate}`);
-                }
-            }
-
-            // DOM ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-
-        })();
+        }
     </script>
+</head>
+<body class="bg-brand-light font-sans text-gray-800">
 
+    <!-- Header -->
+    <header class="bg-brand text-white py-6 shadow-md text-center">
+        <h1 class="text-3xl font-bold uppercase tracking-wide">Official Voting Portal</h1>
+        <p class="text-blue-200 mt-2">1 Vote = KSh 10</p>
+    </header>
+
+    <!-- Candidates Section -->
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Candidate 1 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-brand text-center">
+                <div class="w-32 h-32 mx-auto bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-brand-light">
+                    <!-- Replace src with actual image URL -->
+                    <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=2563eb&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-2xl font-bold text-brand-dark mb-2">Luqman Sumba</h2>
+                <p class="text-gray-500 mb-6">Candidate ID: #001</p>
+                <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                    Vote for Luqman
+                </button>
+            </div>
+
+            <!-- Candidate 2 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-brand text-center">
+                <div class="w-32 h-32 mx-auto bg-gray-200 rounded-full mb-4 overflow-hidden border-4 border-brand-light">
+                    <!-- Replace src with actual image URL -->
+                    <img src="https://ui-avatars.com/api/?name=Caeser+Olwaminabo&background=2563eb&color=fff&size=128" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-2xl font-bold text-brand-dark mb-2">Caeser Olwaminabo</h2>
+                <p class="text-gray-500 mb-6">Candidate ID: #002</p>
+                <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                    Vote for Caeser
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-2xl">&times;</button>
+            
+            <h3 class="text-xl font-bold text-brand-dark mb-4 border-b pb-2">Cast your vote</h3>
+            
+            <p class="mb-4">Voting for: <strong id="modalCandidateName" class="text-brand"></strong></p>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Number of Votes</label>
+                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-4 py-2 border rounded-lg focus:ring-brand focus:border-brand">
+            </div>
+
+            <div class="bg-brand-light p-3 rounded-lg mb-4 text-center border border-blue-200">
+                <span class="text-sm text-gray-600">Total Amount:</span>
+                <span class="block text-2xl font-bold text-brand">KSh <span id="totalCost">10</span></span>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa Number</label>
+                <input type="tel" id="phoneNumber" placeholder="07XXXXXXXX or 2547XXXXXXXX" class="w-full px-4 py-2 border rounded-lg focus:ring-brand focus:border-brand">
+            </div>
+
+            <button id="payBtn" onclick="initiatePayment()" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-lg transition duration-200">
+                Pay & Vote
+            </button>
+
+            <!-- Status Indicator -->
+            <div id="statusMessage" class="hidden mt-4 text-center text-sm font-medium p-3 rounded-lg"></div>
+        </div>
+    </div>
+
+    <script>
+        // REPLACE THIS with your Render/Railway backend URL once deployed
+        const BACKEND_URL = "http://localhost:3000"; 
+        
+        let currentCandidateId = '';
+        const COST_PER_VOTE = 10;
+
+        function openModal(name, id) {
+            document.getElementById('modalCandidateName').innerText = name;
+            currentCandidateId = id;
+            document.getElementById('voteModal').classList.remove('hidden');
+            resetModal();
+        }
+
+        function closeModal() {
+            document.getElementById('voteModal').classList.add('hidden');
+        }
+
+        function updateCost() {
+            const votes = document.getElementById('voteCount').value;
+            document.getElementById('totalCost').innerText = (votes * COST_PER_VOTE).toLocaleString();
+        }
+
+        function resetModal() {
+            document.getElementById('voteCount').value = 1;
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('statusMessage').classList.add('hidden');
+            document.getElementById('payBtn').disabled = false;
+            document.getElementById('payBtn').innerText = 'Pay & Vote';
+            updateCost();
+        }
+
+        async function initiatePayment() {
+            const phone = document.getElementById('phoneNumber').value;
+            const votes = document.getElementById('voteCount').value;
+            const statusDiv = document.getElementById('statusMessage');
+            const btn = document.getElementById('payBtn');
+
+            if(!phone || phone.length < 10) {
+                alert("Please enter a valid M-Pesa number");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Sending Prompt...';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, candidateId: currentCandidateId, votes: parseInt(votes) })
+                });
+                
+                const data = await response.json();
+
+                if (data.CheckoutRequestID) {
+                    btn.innerText = 'Check your phone';
+                    statusDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                    statusDiv.classList.add('bg-blue-100', 'text-blue-700');
+                    statusDiv.innerText = 'M-Pesa Prompt sent! Enter PIN to confirm...';
+                    
+                    // Start polling for payment status
+                    pollTransactionStatus(data.CheckoutRequestID);
+                } else {
+                    throw new Error("Failed to initiate payment");
+                }
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerText = 'Pay & Vote';
+                statusDiv.classList.remove('hidden', 'bg-blue-100', 'text-blue-700');
+                statusDiv.classList.add('bg-red-100', 'text-red-700');
+                statusDiv.innerText = 'Error connecting to M-Pesa. Try again.';
+            }
+        }
+
+        async function pollTransactionStatus(checkoutRequestId) {
+            const statusDiv = document.getElementById('statusMessage');
+            
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/status/${checkoutRequestId}`);
+                    const data = await res.json();
+
+                    if (data.status === 'COMPLETED') {
+                        clearInterval(interval);
+                        statusDiv.classList.replace('bg-blue-100', 'bg-green-100');
+                        statusDiv.classList.replace('text-blue-700', 'text-green-700');
+                        statusDiv.innerText = 'Payment Successful! Votes Added.';
+                        setTimeout(closeModal, 3000);
+                    } else if (data.status === 'FAILED') {
+                        clearInterval(interval);
+                        statusDiv.classList.replace('bg-blue-100', 'bg-red-100');
+                        statusDiv.classList.replace('text-blue-700', 'text-red-700');
+                        statusDiv.innerText = 'Payment Failed or Cancelled.';
+                        document.getElementById('payBtn').disabled = false;
+                        document.getElementById('payBtn').innerText = 'Try Again';
+                    }
+                } catch (e) {
+                    console.error("Polling error", e);
+                }
+            }, 3000); // Check every 3 seconds
+        }
+    </script>
 </body>
 </html>
