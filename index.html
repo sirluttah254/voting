@@ -10,8 +10,7 @@
             theme: {
                 extend: { 
                     colors: { 
-                        poster: { gold: '#facc15' },
-                        darkgreen: { 950: '#022c22', 900: '#064e3b' }
+                        poster: { gold: '#facc15' }
                     } 
                 }
             }
@@ -58,32 +57,32 @@
         <!-- Main 3-Column Layout (Left Card, Center Poster, Right Card) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center relative z-10">
             
-            <!-- Candidate 1: Luqman Sumba (Left Column) -->
-            <div class="bg-emerald-900 bg-opacity-90 backdrop-blur-sm rounded-xl shadow-2xl p-6 border-t-8 border-green-500 text-center flex flex-col h-full transform transition hover:-translate-y-1 border border-emerald-800">
-                <div class="w-28 h-28 mx-auto bg-emerald-950 rounded-full mb-4 overflow-hidden border-4 border-green-500 shadow-md">
-                    <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=10b981&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
+            <!-- Candidate 1: Luqman Sumba (White & Green Theme) -->
+            <div class="bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full transform transition hover:-translate-y-1">
+                <div class="w-28 h-28 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
+                    <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=16a34a&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
                 </div>
-                <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Luqman Sumba</h2>
-                <p class="text-green-400 font-bold text-xs mb-4 tracking-widest uppercase">Green Commandos</p>
+                <h2 class="text-2xl font-black text-green-900 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
+                <p class="text-green-600 font-bold text-xs mb-4 tracking-widest uppercase">Green Commandos</p>
                 
                 <!-- Live Stats Section -->
-                <div class="mt-auto mb-6 bg-emerald-950 p-4 rounded-lg border border-emerald-800">
+                <div class="mt-auto mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
                     <div class="flex justify-between items-end mb-2">
                         <div class="text-left">
-                            <span class="block text-xs text-emerald-400 font-bold uppercase">Total Votes</span>
-                            <span id="votes-001" class="text-2xl font-extrabold text-white">0</span>
+                            <span class="block text-xs text-green-600 font-bold uppercase">Total Votes</span>
+                            <span id="votes-001" class="text-2xl font-extrabold text-green-950">0</span>
                         </div>
                         <div id="perc-001" class="bg-green-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">
                             0%
                         </div>
                     </div>
                     <!-- Progress Bar -->
-                    <div class="w-full bg-emerald-900 rounded-full h-3 shadow-inner">
-                        <div id="bar-001" class="bg-green-500 h-3 rounded-full progress-bar" style="width: 0%"></div>
+                    <div class="w-full bg-green-200 rounded-full h-3 shadow-inner">
+                        <div id="bar-001" class="bg-green-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-green-600 hover:bg-green-500 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
                     Vote Luqman
                 </button>
             </div>
@@ -95,19 +94,19 @@
                      class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
             </div>
 
-            <!-- Candidate 2: Caeser Olwaminabo (Right Column) -->
-            <div class="bg-emerald-900 bg-opacity-90 backdrop-blur-sm rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full transform transition hover:-translate-y-1 border border-emerald-800">
-                <div class="w-28 h-28 mx-auto bg-emerald-950 rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
+            <!-- Candidate 2: Caeser Olwaminabo (Black, Red & White Theme) -->
+            <div class="bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full transform transition hover:-translate-y-1 border border-gray-800">
+                <div class="w-28 h-28 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
                     <img src="https://ui-avatars.com/api/?name=Caeser+Olwaminabo&background=dc2626&color=fff&size=128" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
                 </div>
                 <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
-                <p class="text-red-400 font-bold text-xs mb-4 tracking-widest uppercase">Scorpions</p>
+                <p class="text-red-500 font-bold text-xs mb-4 tracking-widest uppercase">Scorpions</p>
                 
                 <!-- Live Stats Section -->
-                <div class="mt-auto mb-6 bg-emerald-950 p-4 rounded-lg border border-emerald-800">
+                <div class="mt-auto mb-6 bg-black p-4 rounded-lg border border-gray-800">
                     <div class="flex justify-between items-end mb-2">
                         <div class="text-left">
-                            <span class="block text-xs text-red-400 font-bold uppercase">Total Votes</span>
+                            <span class="block text-xs text-red-500 font-bold uppercase">Total Votes</span>
                             <span id="votes-002" class="text-2xl font-extrabold text-white">0</span>
                         </div>
                         <div id="perc-002" class="bg-red-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">
@@ -115,12 +114,12 @@
                         </div>
                     </div>
                     <!-- Progress Bar -->
-                    <div class="w-full bg-emerald-900 rounded-full h-3 shadow-inner">
+                    <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner">
                         <div id="bar-002" class="bg-red-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-red-600 hover:bg-red-500 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
                     Vote Caeser
                 </button>
             </div>
