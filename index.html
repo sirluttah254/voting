@@ -54,11 +54,18 @@
             </p>
         </div>
 
-        <!-- Main 3-Column Layout (Left Card, Center Poster, Right Card) -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center relative z-10">
+        <!-- Layout Container (Mobile: Flex column with Poster first & smaller | PC: Grid 3 columns Luqman, Poster, Caeser) -->
+        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-8 items-center relative z-10">
             
+            <!-- Center Section / Poster: Appears FIRST on mobile (smaller), and CENTER (normal size) on PC -->
+            <div class="order-1 lg:order-2 w-48 sm:w-56 lg:w-full max-w-sm mx-auto lg:max-w-none poster-glow rounded-xl overflow-hidden relative group border border-emerald-800">
+                <img src="poster.jpeg" 
+                     alt="Best Fans of the Season Poster" 
+                     class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
+            </div>
+
             <!-- Candidate 1: Luqman Sumba (White & Green Theme) -->
-            <div class="bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full transform transition hover:-translate-y-1">
+            <div class="order-2 lg:order-1 bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full w-full transform transition hover:-translate-y-1">
                 <div class="w-28 h-28 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
                     <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=16a34a&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
                 </div>
@@ -87,15 +94,8 @@
                 </button>
             </div>
 
-            <!-- Center Section: The Poster -->
-            <div class="w-full max-w-sm mx-auto lg:max-w-none poster-glow rounded-xl overflow-hidden relative group border border-emerald-800">
-                <img src="poster.jpeg" 
-                     alt="Best Fans of the Season Poster" 
-                     class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
-            </div>
-
             <!-- Candidate 2: Caeser Olwaminabo (Black, Red & White Theme) -->
-            <div class="bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full transform transition hover:-translate-y-1 border border-gray-800">
+            <div class="order-3 lg:order-3 bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full w-full transform transition hover:-translate-y-1 border border-gray-800">
                 <div class="w-28 h-28 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
                     <img src="https://ui-avatars.com/api/?name=Caeser+Olwaminabo&background=dc2626&color=fff&size=128" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
                 </div>
