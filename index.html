@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEST FANS OF THE SEASON</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    colors: { 
+                        brand: { light: '#eff6ff', DEFAULT: '#2563eb', dark: '#1e40af' },
+                        poster: { gold: '#facc15' } // Matching the yellow/gold text in your poster
+                    } 
+                }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar { transition: width 0.5s ease-in-out; } 
+        /* Adds a cool glow effect behind the poster */
+        .poster-glow {
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <!-- Sleek Top Bar (Replaced the giant text header so the poster can shine) -->
+    <header class="bg-gray-900 text-white sticky top-0 z-40 shadow-xl border-b border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="text-poster-gold font-bold text-xl uppercase tracking-wider">
+                <span class="hidden sm:inline">The Game Isn't Just On The Pitch</span>
+                <span class="sm:hidden">Fan Battle</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="bg-gray-800 px-4 py-1 rounded-full text-sm border border-gray-700">
+                    <span class="text-gray-400">1 Vote =</span> <span class="text-white font-bold">KSh 10</span>
+                </div>
+                <div class="text-sm font-medium">
+                    Total Votes: <span id="total-votes-display" class="font-bold text-poster-gold text-lg">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- Hero Section: The Poster -->
+        <div class="mb-12 w-full max-w-2xl mx-auto poster-glow rounded-xl overflow-hidden relative group">
+            <!-- The uploaded image -->
+            <img src="poster.jpeg" 
+     alt="Best Fans of the Season Poster" 
+     class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
+                 
+            <!-- Subtle gradient overlay at the bottom to blend into the cards -->
+            <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-gray-100 to-transparent"></div>
+        </div>
+
+        <!-- Candidates Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+            
+            <!-- Candidate 1: Luqman Sumba (Green Theme) -->
+            <div class="bg-white rounded-xl shadow-xl p-6 border-t-8 border-green-600 text-center flex flex-col transform transition hover:-translate-y-1">
+                <div class="w-32 h-32 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
+                    <!-- Updated avatar to match Luqman's smiling face -->
+                    <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=16a34a&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-3xl font-black text-green-800 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
+                <p class="text-green-600 font-bold text-sm mb-4 tracking-widest uppercase">Green Commandos</p>
+                
+                <!-- Live Stats Section -->
+                <div class="mt-auto mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div class="flex justify-between items-end mb-2">
+                        <div class="text-left">
+                            <span class="block text-xs text-green-600 font-bold uppercase">Total Votes</span>
+                            <span id="votes-001" class="text-3xl font-extrabold text-green-900">0</span>
+                        </div>
+                        <div id="perc-001" class="bg-green-600 text-white text-lg font-bold px-3 py-1 rounded-md shadow-sm">
+                            0%
+                        </div>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-green-200 rounded-full h-3 shadow-inner">
+                        <div id="bar-001" class="bg-green-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-lg py-4 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                    Vote Luqman
+                </button>
+            </div>
+
+            <!-- Candidate 2: Caeser Olwaminabo (Black/Red Theme) -->
+            <div class="bg-gray-900 rounded-xl shadow-xl p-6 border-t-8 border-red-600 text-center relative flex flex-col transform transition hover:-translate-y-1">
+                <div class="w-32 h-32 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
+                    <!-- Updated avatar to match Caeser -->
+                    <img src="https://ui-avatars.com/api/?name=Caeser+Olwaminabo&background=dc2626&color=fff&size=128" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-3xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
+                <p class="text-red-500 font-bold text-sm mb-4 tracking-widest uppercase">Scorpions</p>
+                
+                <!-- Live Stats Section -->
+                <div class="mt-auto mb-6 bg-black p-4 rounded-lg border border-gray-800">
+                    <div class="flex justify-between items-end mb-2">
+                        <div class="text-left">
+                            <span class="block text-xs text-red-600 font-bold uppercase">Total Votes</span>
+                            <span id="votes-002" class="text-3xl font-extrabold text-white">0</span>
+                        </div>
+                        <div id="perc-002" class="bg-red-600 text-white text-lg font-bold px-3 py-1 rounded-md shadow-sm">
+                            0%
+                        </div>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner">
+                        <div id="bar-002" class="bg-red-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-lg py-4 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                    Vote Caeser
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 text-3xl font-light">&times;</button>
+            
+            <h3 class="text-2xl font-black text-gray-900 mb-4 border-b pb-2 uppercase tracking-tight">Cast your vote</h3>
+            <p class="mb-4 text-gray-600">You are voting for: <strong id="modalCandidateName" class="text-gray-900 text-lg uppercase"></strong></p>
+
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase">Number of Votes</label>
+                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-poster-gold focus:border-poster-gold text-lg font-bold">
+            </div>
+
+            <div class="bg-gray-100 p-4 rounded-lg mb-6 text-center border border-gray-200">
+                <span class="text-sm text-gray-500 font-bold uppercase">Total Amount</span>
+                <span class="block text-4xl font-black text-gray-900 mt-1">KSh <span id="totalCost">10</span></span>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase">Safaricom M-Pesa Number</label>
+                <input type="tel" id="phoneNumber" placeholder="07XX XXX XXX or 2547XX XXX XXX" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-poster-gold focus:border-poster-gold text-lg">
+            </div>
+
+            <button id="payBtn" onclick="initiatePayment()" class="w-full bg-gray-900 hover:bg-black text-white font-black text-lg py-4 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest">
+                Pay & Vote Now
+            </button>
+
+            <!-- Status Indicator -->
+            <div id="statusMessage" class="hidden mt-4 text-center text-sm font-bold p-4 rounded-lg border"></div>
+        </div>
+    </div>
+
+    <script>
+        // REPLACE THIS with your Render/Railway backend URL once deployed
+        const BACKEND_URL = "http://localhost:3000"; 
+        
+        let currentCandidateId = '';
+        const COST_PER_VOTE = 10;
+
+        async function fetchLiveStats() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/stats`);
+                const data = await response.json();
+                
+                document.getElementById('total-votes-display').innerText = data.totalVotes.toLocaleString();
+
+                data.candidates.forEach(candidate => {
+                    const id = candidate.id;
+                    if(document.getElementById(`votes-${id}`)) {
+                        document.getElementById(`votes-${id}`).innerText = candidate.votes.toLocaleString();
+                        document.getElementById(`perc-${id}`).innerText = `${candidate.percentage}%`;
+                        document.getElementById(`bar-${id}`).style.width = `${candidate.percentage}%`;
+                    }
+                });
+            } catch (error) {
+                console.error("Could not fetch live stats", error);
+            }
+        }
+
+        fetchLiveStats();
+        setInterval(fetchLiveStats, 5000); 
+
+        function openModal(name, id) {
+            document.getElementById('modalCandidateName').innerText = name;
+            currentCandidateId = id;
+            document.getElementById('voteModal').classList.remove('hidden');
+            resetModal();
+        }
+
+        function closeModal() {
+            document.getElementById('voteModal').classList.add('hidden');
+        }
+
+        function updateCost() {
+            const votes = document.getElementById('voteCount').value;
+            document.getElementById('totalCost').innerText = (votes * COST_PER_VOTE).toLocaleString();
+        }
+
+        function resetModal() {
+            document.getElementById('voteCount').value = 1;
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('statusMessage').classList.add('hidden');
+            document.getElementById('payBtn').disabled = false;
+            document.getElementById('payBtn').innerText = 'Pay & Vote Now';
+            updateCost();
+        }
+
+        async function initiatePayment() {
+            const phone = document.getElementById('phoneNumber').value;
+            const votes = document.getElementById('voteCount').value;
+            const statusDiv = document.getElementById('statusMessage');
+            const btn = document.getElementById('payBtn');
+
+            if(!phone || phone.length < 10) {
+                alert("Please enter a valid M-Pesa number");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Sending Prompt...';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, candidateId: currentCandidateId, votes: parseInt(votes) })
+                });
+                
+                const data = await response.json();
+
+                if (data.CheckoutRequestID) {
+                    btn.innerText = 'Check your phone';
+                    statusDiv.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200');
+                    statusDiv.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200');
+                    statusDiv.innerText = 'M-Pesa Prompt sent! Enter PIN to confirm...';
+                    
+                    pollTransactionStatus(data.CheckoutRequestID);
+                } else {
+                    throw new Error("Failed to initiate payment");
+                }
+            } catch (error) {
+                btn.disabled = false;
+                btn.innerText = 'Pay & Vote Now';
+                statusDiv.classList.remove('hidden', 'bg-blue-50', 'text-blue-700', 'border-blue-200');
+                statusDiv.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+                statusDiv.innerText = 'Error connecting to M-Pesa. Try again.';
+            }
+        }
+
+        async function pollTransactionStatus(checkoutRequestId) {
+            const statusDiv = document.getElementById('statusMessage');
+            
+            const interval = setInterval(async () => {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/status/${checkoutRequestId}`);
+                    const data = await res.json();
+
+                    if (data.status === 'COMPLETED') {
+                        clearInterval(interval);
+                        statusDiv.classList.replace('bg-blue-50', 'bg-green-50');
+                        statusDiv.classList.replace('text-blue-700', 'text-green-700');
+                        statusDiv.classList.replace('border-blue-200', 'border-green-200');
+                        statusDiv.innerText = 'Payment Successful! Votes Added.';
+                        
+                        fetchLiveStats();
+                        setTimeout(closeModal, 3000);
+                    } else if (data.status === 'FAILED') {
+                        clearInterval(interval);
+                        statusDiv.classList.replace('bg-blue-50', 'bg-red-50');
+                        statusDiv.classList.replace('text-blue-700', 'text-red-700');
+                        statusDiv.classList.replace('border-blue-200', 'border-red-200');
+                        statusDiv.innerText = 'Payment Failed or Cancelled.';
+                        document.getElementById('payBtn').disabled = false;
+                        document.getElementById('payBtn').innerText = 'Try Again';
+                    }
+                } catch (e) {
+                    console.error("Polling error", e);
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
