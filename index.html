@@ -11,7 +11,7 @@
                 extend: { 
                     colors: { 
                         brand: { light: '#eff6ff', DEFAULT: '#2563eb', dark: '#1e40af' },
-                        poster: { gold: '#facc15' } // Matching the yellow/gold text in your poster
+                        poster: { gold: '#facc15' } 
                     } 
                 }
             }
@@ -19,15 +19,14 @@
     </script>
     <style>
         .progress-bar { transition: width 0.5s ease-in-out; } 
-        /* Adds a cool glow effect behind the poster */
         .poster-glow {
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <!-- Sleek Top Bar (Replaced the giant text header so the poster can shine) -->
+    <!-- Sleek Top Bar -->
     <header class="bg-gray-900 text-white sticky top-0 z-40 shadow-xl border-b border-gray-800">
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
             <div class="text-poster-gold font-bold text-xl uppercase tracking-wider">
@@ -47,15 +46,11 @@
 
     <main class="max-w-4xl mx-auto px-4 py-8">
         
-        <!-- Hero Section: The Poster -->
-        <div class="mb-12 w-full max-w-2xl mx-auto poster-glow rounded-xl overflow-hidden relative group">
-            <!-- The uploaded image -->
+        <!-- Hero Section: The Poster (Reduced size by 50% using max-w-md) -->
+        <div class="mb-10 w-full max-w-md mx-auto poster-glow rounded-xl overflow-hidden relative group">
             <img src="poster.jpeg" 
-     alt="Best Fans of the Season Poster" 
-     class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
-                 
-            <!-- Subtle gradient overlay at the bottom to blend into the cards -->
-            <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-gray-100 to-transparent"></div>
+                 alt="Best Fans of the Season Poster" 
+                 class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
         </div>
 
         <!-- Candidates Section -->
@@ -64,7 +59,6 @@
             <!-- Candidate 1: Luqman Sumba (Green Theme) -->
             <div class="bg-white rounded-xl shadow-xl p-6 border-t-8 border-green-600 text-center flex flex-col transform transition hover:-translate-y-1">
                 <div class="w-32 h-32 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
-                    <!-- Updated avatar to match Luqman's smiling face -->
                     <img src="https://ui-avatars.com/api/?name=Luqman+Sumba&background=16a34a&color=fff&size=128" alt="Luqman Sumba" class="w-full h-full object-cover">
                 </div>
                 <h2 class="text-3xl font-black text-green-800 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
@@ -95,7 +89,6 @@
             <!-- Candidate 2: Caeser Olwaminabo (Black/Red Theme) -->
             <div class="bg-gray-900 rounded-xl shadow-xl p-6 border-t-8 border-red-600 text-center relative flex flex-col transform transition hover:-translate-y-1">
                 <div class="w-32 h-32 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
-                    <!-- Updated avatar to match Caeser -->
                     <img src="https://ui-avatars.com/api/?name=Caeser+Olwaminabo&background=dc2626&color=fff&size=128" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
                 </div>
                 <h2 class="text-3xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
@@ -159,7 +152,6 @@
     </div>
 
     <script>
-        // REPLACE THIS with your Render/Railway backend URL once deployed
         const BACKEND_URL = "http://localhost:3000"; 
         
         let currentCandidateId = '';
