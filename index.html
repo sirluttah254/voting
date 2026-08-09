@@ -155,7 +155,7 @@
             </div>
 
             <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
-                Pay &amp; Vote Automatically
+                Pay &amp; Vote Now
             </button>
 
             <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
@@ -232,7 +232,7 @@
             statusDiv.innerText = "Initializing M-Pesa STK push... Check your phone.";
 
             let handler = PaystackPop.setup({
-                key: 'YOUR_LIVE_PUBLIC_KEY', // <-- PASTE YOUR PAYSTACK LIVE PUBLIC KEY HERE
+                key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', // <-- PASTE YOUR PAYSTACK LIVE PUBLIC KEY HERE
                 email: generatedEmail,
                 amount: totalAmountInCents,
                 currency: 'KES',
