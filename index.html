@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BEST FANS OF THE SEASON</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Paystack Inline JS -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -57,17 +60,17 @@
         <!-- Main Layout Container: Poster First, then Candidates -->
         <div class="flex flex-col items-center gap-8 relative z-10">
             
-            <!-- Poster Section: Appears FIRST and is reduced in size for both Mobile and PC -->
+            <!-- Poster Section -->
             <div class="w-[140px] sm:w-[180px] lg:w-[260px] poster-glow rounded-xl overflow-hidden relative group border border-emerald-800">
                 <img src="poster.jpeg" 
                      alt="Best Fans of the Season Poster" 
                      class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
             </div>
 
-            <!-- Candidates Grid: Luqman and Caeser side-by-side on PC, stacked on mobile -->
+            <!-- Candidates Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl">
                 
-                <!-- Candidate 1: Luqman Sumba (White & Green Theme) -->
+                <!-- Candidate 1: Luqman Sumba -->
                 <div class="bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full transform transition hover:-translate-y-1">
                     <div class="w-32 h-32 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
                         <img src="luqman.jpeg" alt="Luqman Sumba" class="w-full h-full object-cover">
@@ -75,7 +78,6 @@
                     <h2 class="text-2xl font-black text-green-900 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
                     <p class="text-green-600 font-bold text-xs mb-4 tracking-widest uppercase">Green Commandos</p>
                     
-                    <!-- Live Stats Section -->
                     <div class="mt-auto mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
                         <div class="flex justify-between items-end mb-2">
                             <div class="text-left">
@@ -86,7 +88,6 @@
                                 0%
                             </div>
                         </div>
-                        <!-- Progress Bar -->
                         <div class="w-full bg-green-200 rounded-full h-3 shadow-inner">
                             <div id="bar-001" class="bg-green-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
                         </div>
@@ -97,7 +98,7 @@
                     </button>
                 </div>
 
-                <!-- Candidate 2: Caeser Olwaminabo (Black, Red & White Theme) -->
+                <!-- Candidate 2: Caeser Olwaminabo -->
                 <div class="bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full border border-gray-800 transform transition hover:-translate-y-1">
                     <div class="w-32 h-32 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
                         <img src="caeser.jpeg" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
@@ -105,7 +106,6 @@
                     <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
                     <p class="text-red-500 font-bold text-xs mb-4 tracking-widest uppercase">Scorpions</p>
                     
-                    <!-- Live Stats Section -->
                     <div class="mt-auto mb-6 bg-black p-4 rounded-lg border border-gray-800">
                         <div class="flex justify-between items-end mb-2">
                             <div class="text-left">
@@ -116,7 +116,6 @@
                                 0%
                             </div>
                         </div>
-                        <!-- Progress Bar -->
                         <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner">
                             <div id="bar-002" class="bg-red-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
                         </div>
@@ -132,66 +131,48 @@
         </div>
     </main>
 
-    <!-- Payment Modal -->
+    <!-- Automated Payment & Vote Modal -->
     <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
         <div class="bg-emerald-900 text-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold border border-emerald-700">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-emerald-300 hover:text-white text-3xl font-light">&times;</button>
             
-            <h3 class="text-2xl font-black text-white mb-4 border-b border-emerald-800 pb-2 uppercase tracking-tight">Cast your vote</h3>
-            <p class="mb-4 text-emerald-200">You are voting for: <strong id="modalCandidateName" class="text-poster-gold text-lg uppercase"></strong></p>
+            <h3 class="text-2xl font-black text-white mb-2 border-b border-emerald-800 pb-2 uppercase tracking-tight">Automated STK Push</h3>
+            <p class="mb-4 text-emerald-200 text-sm">Voting for: <strong id="modalCandidateName" class="text-poster-gold uppercase"></strong></p>
+
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">Number of Votes (1 Vote = KSh 10)</label>
+                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
+            </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-bold text-emerald-300 mb-2 uppercase">Number of Votes</label>
-                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-4 py-3 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold focus:border-poster-gold text-lg font-bold text-white">
+                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">M-Pesa Phone Number (e.g. 0712345678)</label>
+                <input type="tel" id="voterPhone" placeholder="0712345678" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
             </div>
 
-            <div class="bg-emerald-950 p-4 rounded-lg mb-6 text-center border border-emerald-800">
-                <span class="text-sm text-emerald-400 font-bold uppercase">Total Amount</span>
-                <span class="block text-4xl font-black text-poster-gold mt-1">KSh <span id="totalCost">10</span></span>
+            <div class="bg-emerald-950 p-3 rounded-lg mb-4 text-xs text-emerald-200 border border-emerald-800 flex justify-between items-center">
+                <span class="font-bold uppercase">Total Amount:</span>
+                <span id="instructionCost" class="text-poster-gold font-black text-base">KSh 10</span>
             </div>
 
-            <div class="mb-8">
-                <label class="block text-sm font-bold text-emerald-300 mb-2 uppercase">Safaricom M-Pesa Number</label>
-                <input type="tel" id="phoneNumber" placeholder="07XX XXX XXX or 2547XX XXX XXX" class="w-full px-4 py-3 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold focus:border-poster-gold text-lg text-white">
-            </div>
-
-            <button id="payBtn" onclick="initiatePayment()" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-lg py-4 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest">
-                Pay & Vote Now
+            <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
+                Pay &amp; Vote Automatically
             </button>
 
-            <!-- Status Indicator -->
-            <div id="statusMessage" class="hidden mt-4 text-center text-sm font-bold p-4 rounded-lg border"></div>
+            <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
         </div>
     </div>
 
     <script>
-        const BACKEND_URL = "http://localhost:3000"; 
-        
         let currentCandidateId = '';
         const COST_PER_VOTE = 10;
 
-        async function fetchLiveStats() {
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/stats`);
-                const data = await response.json();
-                
-                document.getElementById('total-votes-display').innerText = data.totalVotes.toLocaleString();
+        // Load existing votes from local storage
+        let votesData = JSON.parse(localStorage.getItem('fan_votes_data')) || {
+            '001': 0,
+            '002': 0
+        };
 
-                data.candidates.forEach(candidate => {
-                    const id = candidate.id;
-                    if(document.getElementById(`votes-${id}`)) {
-                        document.getElementById(`votes-${id}`).innerText = candidate.votes.toLocaleString();
-                        document.getElementById(`perc-${id}`).innerText = `${candidate.percentage}%`;
-                        document.getElementById(`bar-${id}`).style.width = `${candidate.percentage}%`;
-                    }
-                });
-            } catch (error) {
-                console.error("Could not fetch live stats", error);
-            }
-        }
-
-        fetchLiveStats();
-        setInterval(fetchLiveStats, 5000); 
+        updateDisplayStats();
 
         function openModal(name, id) {
             document.getElementById('modalCandidateName').innerText = name;
@@ -205,91 +186,92 @@
         }
 
         function updateCost() {
-            const votes = document.getElementById('voteCount').value;
-            document.getElementById('totalCost').innerText = (votes * COST_PER_VOTE).toLocaleString();
+            const votes = parseInt(document.getElementById('voteCount').value) || 1;
+            const total = votes * COST_PER_VOTE;
+            document.getElementById('instructionCost').innerText = `KSh ${total}`;
         }
 
         function resetModal() {
             document.getElementById('voteCount').value = 1;
-            document.getElementById('phoneNumber').value = '';
+            document.getElementById('voterPhone').value = '';
             document.getElementById('statusMessage').classList.add('hidden');
-            document.getElementById('payBtn').disabled = false;
-            document.getElementById('payBtn').innerText = 'Pay & Vote Now';
             updateCost();
         }
 
-        async function initiatePayment() {
-            const phone = document.getElementById('phoneNumber').value;
-            const votes = document.getElementById('voteCount').value;
-            const statusDiv = document.getElementById('statusMessage');
-            const btn = document.getElementById('payBtn');
+        function updateDisplayStats() {
+            const totalVotes = Object.values(votesData).reduce((a, b) => a + b, 0);
+            document.getElementById('total-votes-display').innerText = totalVotes.toLocaleString();
 
-            if(!phone || phone.length < 10) {
-                alert("Please enter a valid M-Pesa number");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = 'Sending Prompt...';
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/api/vote`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone, candidateId: currentCandidateId, votes: parseInt(votes) })
-                });
-                
-                const data = await response.json();
-
-                if (data.CheckoutRequestID) {
-                    btn.innerText = 'Check your phone';
-                    statusDiv.classList.remove('hidden', 'bg-red-950', 'text-red-300', 'border-red-800');
-                    statusDiv.classList.add('bg-blue-950', 'text-blue-300', 'border-blue-800');
-                    statusDiv.innerText = 'M-Pesa Prompt sent! Enter PIN to confirm...';
-                    
-                    pollTransactionStatus(data.CheckoutRequestID);
-                } else {
-                    throw new Error("Failed to initiate payment");
+            for (const [id, count] of Object.entries(votesData)) {
+                const perc = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+                if(document.getElementById(`votes-${id}`)) {
+                    document.getElementById(`votes-${id}`).innerText = count.toLocaleString();
+                    document.getElementById(`perc-${id}`).innerText = `${perc}%`;
+                    document.getElementById(`bar-${id}`).style.width = `${perc}%`;
                 }
-            } catch (error) {
-                btn.disabled = false;
-                btn.innerText = 'Pay & Vote Now';
-                statusDiv.classList.remove('hidden', 'bg-blue-950', 'text-blue-300', 'border-blue-800');
-                statusDiv.classList.add('bg-red-950', 'text-red-300', 'border-red-800');
-                statusDiv.innerText = 'Error connecting to M-Pesa. Try again.';
             }
         }
 
-        async function pollTransactionStatus(checkoutRequestId) {
+        function payWithPaystack() {
+            const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
+            const voterPhone = document.getElementById('voterPhone').value.trim();
+            const candidateName = document.getElementById('modalCandidateName').innerText;
             const statusDiv = document.getElementById('statusMessage');
-            
-            const interval = setInterval(async () => {
-                try {
-                    const res = await fetch(`${BACKEND_URL}/api/status/${checkoutRequestId}`);
-                    const data = await res.json();
 
-                    if (data.status === 'COMPLETED') {
-                        clearInterval(interval);
-                        statusDiv.classList.replace('bg-blue-950', 'bg-emerald-950');
-                        statusDiv.classList.replace('text-blue-300', 'text-emerald-300');
-                        statusDiv.classList.replace('border-blue-800', 'border-emerald-700');
-                        statusDiv.innerText = 'Payment Successful! Votes Added.';
-                        
-                        fetchLiveStats();
-                        setTimeout(closeModal, 3000);
-                    } else if (data.status === 'FAILED') {
-                        clearInterval(interval);
-                        statusDiv.classList.replace('bg-blue-950', 'bg-red-950');
-                        statusDiv.classList.replace('text-blue-300', 'text-red-300');
-                        statusDiv.classList.replace('border-blue-800', 'border-red-800');
-                        statusDiv.innerText = 'Payment Failed or Cancelled.';
-                        document.getElementById('payBtn').disabled = false;
-                        document.getElementById('payBtn').innerText = 'Try Again';
-                    }
-                } catch (e) {
-                    console.error("Polling error", e);
+            if (!voterPhone || voterPhone.length < 10) {
+                alert("Please enter a valid M-Pesa phone number to receive the STK push.");
+                return;
+            }
+
+            // Paystack requires amount in subunits (cents). KSh 10 = 1000 subunits.
+            const totalAmountInCents = votesInput * COST_PER_VOTE * 100;
+            const generatedEmail = `voter_${new Date().getTime()}@fanvote.com`;
+
+            statusDiv.classList.remove('hidden');
+            statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-poster-gold border-emerald-700";
+            statusDiv.innerText = "Initializing M-Pesa STK push... Check your phone.";
+
+            let handler = PaystackPop.setup({
+                key: 'YOUR_LIVE_PUBLIC_KEY', // <-- PASTE YOUR PAYSTACK LIVE PUBLIC KEY HERE
+                email: generatedEmail,
+                amount: totalAmountInCents,
+                currency: 'KES',
+                channels: ['mobile_money'],
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Candidate",
+                            variable_name: "candidate_name",
+                            value: candidateName
+                        },
+                        {
+                            display_name: "Votes",
+                            variable_name: "vote_count",
+                            value: votesInput
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    // Update vote count locally upon successful transaction confirmation
+                    votesData[currentCandidateId] = (votesData[currentCandidateId] || 0) + votesInput;
+                    localStorage.setItem('fan_votes_data', JSON.stringify(votesData));
+
+                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-emerald-300 border-emerald-700";
+                    statusDiv.innerText = `Success! Ref: ${response.reference}. Votes recorded!`;
+
+                    updateDisplayStats();
+
+                    setTimeout(() => {
+                        closeModal();
+                    }, 3000);
+                },
+                onClose: function() {
+                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-red-950 text-red-300 border-red-800";
+                    statusDiv.innerText = "Payment window closed.";
                 }
-            }, 3000);
+            });
+
+            handler.openIframe();
         }
     </script>
 </body>
