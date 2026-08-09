@@ -62,33 +62,182 @@
             const candidateName = document.getElementById('modalCandidateName').innerText;
             const statusDiv = document.getElementById('statusMessage');
 
+            if (!voterPhone || voterPhone.length < 10) {
+                alert("Please enter a valid M-Pesa phone number.");
+                return;
+            }
+
+            statusDiv.classList.remove('hidden');
+            statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-yellow-400 border-emerald-700";
+            statusDiv.innerText = "Initializing STK push...";
+
             let handler = PaystackPop.setup({
                 key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', 
                 email: `voter_${new Date().getTime()}@fanvote.com`,
                 amount: votesInput * COST_PER_VOTE * 100,
                 currency: 'KES',
+                channels: ['mobile_money'],
                 callback: function(response) {
                     const candidateRef = ref(db, `votes/${currentCandidateId}`);
                     get(candidateRef).then((snapshot) => {
                         const currentCount = snapshot.exists() ? snapshot.val() : 0;
                         set(candidateRef, currentCount + votesInput).then(() => {
+                            statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-emerald-300 border-emerald-700";
                             statusDiv.innerText = "Success! Votes recorded!";
                             setTimeout(() => { window.closeModal(); }, 2000);
                         });
                     });
+                },
+                onClose: function() {
+                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-red-950 text-red-300 border-red-800";
+                    statusDiv.innerText = "Payment window closed.";
                 }
             });
             handler.openIframe();
         }
 
         // Global UI Functions
-        window.openModal = (name, id) => { currentCandidateId = id; document.getElementById('modalCandidateName').innerText = name; document.getElementById('voteModal').classList.remove('hidden'); }
+        window.openModal = (name, id) => { currentCandidateId = id; document.getElementById('modalCandidateName').innerText = name; document.getElementById('voteModal').classList.remove('hidden'); resetModal(); }
         window.closeModal = () => document.getElementById('voteModal').classList.add('hidden');
         window.updateCost = () => document.getElementById('instructionCost').innerText = `KSh ${document.getElementById('voteCount').value * COST_PER_VOTE}`;
+        function resetModal() {
+            document.getElementById('voteCount').value = 1;
+            document.getElementById('voterPhone').value = '';
+            document.getElementById('statusMessage').classList.add('hidden');
+            window.updateCost();
+        }
     </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { colors: { poster: { gold: '#facc15' } } }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar { transition: width 0.5s ease-in-out; } 
+        .poster-glow { box-shadow: 0 0 35px rgba(0, 0, 0, 0.6); }
+    </style>
 </head>
 <body class="bg-emerald-950 font-sans text-gray-100 min-h-screen">
-    <!-- ... [Rest of your HTML UI code remains the same] ... -->
-    <!-- Ensure your IDs (votes-001, votes-002, etc) remain unchanged in the HTML body -->
+
+    <!-- Sleek Top Bar -->
+    <header class="bg-emerald-900 text-white sticky top-0 z-40 shadow-xl border-b border-emerald-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+            <div class="text-poster-gold font-bold text-lg uppercase tracking-wider">
+                Fan Battle of the Season
+            </div>
+            <div class="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                <div class="bg-emerald-950 px-4 py-1 rounded-full text-sm border border-emerald-700">
+                    <span class="text-emerald-300">1 Vote =</span> <span class="text-white font-bold">KSh 10</span>
+                </div>
+                <div class="text-sm font-medium">
+                    Total Votes: <span id="total-votes-display" class="font-bold text-poster-gold text-lg">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-5xl font-black text-white tracking-wider uppercase mb-3 drop-shadow-md">
+                The Game Isn't Just On The Pitch
+            </h1>
+            <p class="text-lg md:text-xl font-bold text-emerald-950 tracking-widest uppercase bg-poster-gold py-2 px-6 inline-block rounded-full shadow-lg">
+                Vote For Your Favourite!!!
+            </p>
+        </div>
+
+        <div class="flex flex-col items-center gap-8 relative z-10">
+            <div class="w-[140px] sm:w-[180px] lg:w-[260px] poster-glow rounded-xl overflow-hidden relative group border border-emerald-800">
+                <img src="poster.jpeg" alt="Best Fans of the Season Poster" class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl">
+                <!-- Candidate 1 -->
+                <div class="bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full transform transition hover:-translate-y-1">
+                    <div class="w-32 h-32 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
+                        <img src="luqman.jpeg" alt="Luqman Sumba" class="w-full h-full object-cover">
+                    </div>
+                    <h2 class="text-2xl font-black text-green-900 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
+                    <p class="text-green-600 font-bold text-xs mb-4 tracking-widest uppercase">Green Commandos</p>
+                    
+                    <div class="mt-auto mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
+                        <div class="flex justify-between items-end mb-2">
+                            <div class="text-left">
+                                <span class="block text-xs text-green-600 font-bold uppercase">Total Votes</span>
+                                <span id="votes-001" class="text-2xl font-extrabold text-green-950">0</span>
+                            </div>
+                            <div id="perc-001" class="bg-green-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">0%</div>
+                        </div>
+                        <div class="w-full bg-green-200 rounded-full h-3 shadow-inner">
+                            <div id="bar-001" class="bg-green-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                        Vote Luqman
+                    </button>
+                </div>
+
+                <!-- Candidate 2 -->
+                <div class="bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full border border-gray-800 transform transition hover:-translate-y-1">
+                    <div class="w-32 h-32 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
+                        <img src="caeser.jpeg" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
+                    </div>
+                    <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
+                    <p class="text-red-500 font-bold text-xs mb-4 tracking-widest uppercase">Scorpions</p>
+                    
+                    <div class="mt-auto mb-6 bg-black p-4 rounded-lg border border-gray-800">
+                        <div class="flex justify-between items-end mb-2">
+                            <div class="text-left">
+                                <span class="block text-xs text-red-500 font-bold uppercase">Total Votes</span>
+                                <span id="votes-002" class="text-2xl font-extrabold text-white">0</span>
+                            </div>
+                            <div id="perc-002" class="bg-red-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">0%</div>
+                        </div>
+                        <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner">
+                            <div id="bar-002" class="bg-red-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                        Vote Caeser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-emerald-900 text-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold border border-emerald-700">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-emerald-300 hover:text-white text-3xl font-light">&times;</button>
+            
+            <h3 class="text-2xl font-black text-white mb-2 border-b border-emerald-800 pb-2 uppercase tracking-tight">Automated STK Push</h3>
+            <p class="mb-4 text-emerald-200 text-sm">Voting for: <strong id="modalCandidateName" class="text-poster-gold uppercase"></strong></p>
+
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">Number of Votes (1 Vote = KSh 10)</label>
+                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">M-Pesa Phone Number (e.g. 0712345678)</label>
+                <input type="tel" id="voterPhone" placeholder="0712345678" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
+            </div>
+
+            <div class="bg-emerald-950 p-3 rounded-lg mb-4 text-xs text-emerald-200 border border-emerald-800 flex justify-between items-center">
+                <span class="font-bold uppercase">Total Amount:</span>
+                <span id="instructionCost" class="text-poster-gold font-black text-base">KSh 10</span>
+            </div>
+
+            <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
+                Pay &amp; Vote Automatically
+            </button>
+
+            <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
+        </div>
+    </div>
 </body>
 </html>
