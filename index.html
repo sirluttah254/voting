@@ -34,8 +34,15 @@
             <div class="text-poster-gold font-bold text-lg uppercase tracking-wider">
                 Fan Battle of the Season
             </div>
-            <div class="flex items-center gap-4">
-                <div class="bg-emerald-950 px-4 py-1 rounded-full text-sm border border-emerald-700">
+            <div class="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
+                
+                <!-- NEW COUNTDOWN TIMER -->
+                <div id="countdown-timer" class="bg-red-950 px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm border border-red-700 font-bold tracking-wider shadow-inner transition-colors duration-500">
+                    <span class="text-red-400 timer-label">CLOSES IN:</span> 
+                    <span id="timer-display" class="text-white">Loading...</span>
+                </div>
+
+                <div class="bg-emerald-950 px-4 py-1 rounded-full text-sm border border-emerald-700 hidden md:block">
                     <span class="text-emerald-300">1 Vote =</span> <span class="text-white font-bold">KSh 10</span>
                 </div>
                 <div class="text-sm font-medium">
@@ -57,7 +64,7 @@
             </p>
         </div>
 
-        <!-- Main Layout Container: Poster First, then Candidates -->
+        <!-- Main Layout Container -->
         <div class="flex flex-col items-center gap-8 relative z-10">
             
             <!-- Poster Section -->
@@ -93,7 +100,7 @@
                         </div>
                     </div>
 
-                    <button onclick="openModal('Luqman Sumba', '001')" class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                    <button onclick="openModal('Luqman Sumba', '001')" class="candidate-vote-btn w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
                         Vote Luqman
                     </button>
                 </div>
@@ -121,7 +128,7 @@
                         </div>
                     </div>
 
-                    <button onclick="openModal('Caeser Olwaminabo', '002')" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
+                    <button onclick="openModal('Caeser Olwaminabo', '002')" class="candidate-vote-btn w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
                         Vote Caeser
                     </button>
                 </div>
@@ -155,7 +162,7 @@
             </div>
 
             <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
-                Pay &amp; Vote Now
+                Pay &amp; Vote Automatically
             </button>
 
             <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
@@ -165,8 +172,64 @@
     <script>
         let currentCandidateId = '';
         const COST_PER_VOTE = 10;
+        let isVotingOpen = true;
 
-        // Load existing votes from local storage
+        // -------------------------
+        // 1. COUNTDOWN TIMER LOGIC
+        // -------------------------
+        const VOTING_END_DATE = new Date("August 30, 2026 23:59:59").getTime();
+
+        const timerInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const timeRemaining = VOTING_END_DATE - now;
+            const timerDisplay = document.getElementById("timer-display");
+
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                isVotingOpen = false;
+                timerDisplay.innerText = "VOTING CLOSED";
+                
+                const timerContainer = document.getElementById("countdown-timer");
+                timerContainer.classList.replace("bg-red-950", "bg-gray-800");
+                timerContainer.classList.replace("border-red-700", "border-gray-600");
+                timerContainer.querySelector(".timer-label").innerText = "STATUS:";
+                timerContainer.querySelector(".timer-label").classList.replace("text-red-400", "text-gray-400");
+                
+                lockVotingSystem();
+                return;
+            }
+
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }, 1000);
+
+        function lockVotingSystem() {
+            const voteButtons = document.querySelectorAll('.candidate-vote-btn');
+            voteButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.innerText = "Voting Closed";
+                btn.classList.remove("hover:bg-green-700", "hover:bg-red-700", "bg-green-600", "bg-red-600");
+                btn.classList.add("bg-gray-700", "text-gray-400", "cursor-not-allowed", "opacity-80");
+                btn.onclick = null; 
+            });
+
+            const payBtn = document.getElementById("submitBtn");
+            if(payBtn) {
+                payBtn.disabled = true;
+                payBtn.innerText = "Voting Closed";
+                payBtn.classList.remove("hover:bg-yellow-400", "bg-poster-gold", "text-emerald-950");
+                payBtn.classList.add("bg-gray-700", "text-gray-400", "cursor-not-allowed", "opacity-80");
+                payBtn.onclick = null; 
+            }
+        }
+
+        // -------------------------
+        // 2. CORE VOTING LOGIC
+        // -------------------------
         let votesData = JSON.parse(localStorage.getItem('fan_votes_data')) || {
             '001': 0,
             '002': 0
@@ -175,6 +238,8 @@
         updateDisplayStats();
 
         function openModal(name, id) {
+            if (!isVotingOpen) return; 
+            
             document.getElementById('modalCandidateName').innerText = name;
             currentCandidateId = id;
             document.getElementById('voteModal').classList.remove('hidden');
@@ -212,7 +277,12 @@
             }
         }
 
+        // -------------------------
+        // 3. PAYSTACK AUTOMATION
+        // -------------------------
         function payWithPaystack() {
+            if (!isVotingOpen) return; 
+
             const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
             const voterPhone = document.getElementById('voterPhone').value.trim();
             const candidateName = document.getElementById('modalCandidateName').innerText;
@@ -223,7 +293,6 @@
                 return;
             }
 
-            // Paystack requires amount in subunits (cents). KSh 10 = 1000 subunits.
             const totalAmountInCents = votesInput * COST_PER_VOTE * 100;
             const generatedEmail = `voter_${new Date().getTime()}@fanvote.com`;
 
@@ -232,7 +301,7 @@
             statusDiv.innerText = "Initializing M-Pesa STK push... Check your phone.";
 
             let handler = PaystackPop.setup({
-                key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', // <-- PASTE YOUR PAYSTACK LIVE PUBLIC KEY HERE
+                key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', 
                 email: generatedEmail,
                 amount: totalAmountInCents,
                 currency: 'KES',
@@ -252,7 +321,6 @@
                     ]
                 },
                 callback: function(response) {
-                    // Update vote count locally upon successful transaction confirmation
                     votesData[currentCandidateId] = (votesData[currentCandidateId] || 0) + votesInput;
                     localStorage.setItem('fan_votes_data', JSON.stringify(votesData));
 
