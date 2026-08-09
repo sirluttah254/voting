@@ -8,339 +8,87 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Paystack Inline JS -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: { 
-                    colors: { 
-                        poster: { gold: '#facc15' }
-                    } 
-                }
-            }
-        }
-    </script>
-    <style>
-        .progress-bar { transition: width 0.5s ease-in-out; } 
-        .poster-glow {
-            box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
-        }
-    </style>
-</head>
-<body class="bg-emerald-950 font-sans text-gray-100 min-h-screen">
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    <!-- Sleek Top Bar -->
-    <header class="bg-emerald-900 text-white sticky top-0 z-40 shadow-xl border-b border-emerald-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-            <div class="text-poster-gold font-bold text-lg uppercase tracking-wider">
-                Fan Battle of the Season
-            </div>
-            <div class="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-0">
-                
-                <!-- NEW COUNTDOWN TIMER -->
-                <div id="countdown-timer" class="bg-red-950 px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm border border-red-700 font-bold tracking-wider shadow-inner transition-colors duration-500">
-                    <span class="text-red-400 timer-label">CLOSES IN:</span> 
-                    <span id="timer-display" class="text-white">Loading...</span>
-                </div>
-
-                <div class="bg-emerald-950 px-4 py-1 rounded-full text-sm border border-emerald-700 hidden md:block">
-                    <span class="text-emerald-300">1 Vote =</span> <span class="text-white font-bold">KSh 10</span>
-                </div>
-                <div class="text-sm font-medium">
-                    Total Votes: <span id="total-votes-display" class="font-bold text-poster-gold text-lg">0</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        
-        <!-- Central Prominent Title Section -->
-        <div class="text-center mb-10">
-            <h1 class="text-3xl md:text-5xl font-black text-white tracking-wider uppercase mb-3 drop-shadow-md">
-                The Game Isn't Just On The Pitch
-            </h1>
-            <p class="text-lg md:text-xl font-bold text-emerald-950 tracking-widest uppercase bg-poster-gold py-2 px-6 inline-block rounded-full shadow-lg">
-                Vote For Your Favourite!!!
-            </p>
-        </div>
-
-        <!-- Main Layout Container -->
-        <div class="flex flex-col items-center gap-8 relative z-10">
-            
-            <!-- Poster Section -->
-            <div class="w-[140px] sm:w-[180px] lg:w-[260px] poster-glow rounded-xl overflow-hidden relative group border border-emerald-800">
-                <img src="poster.jpeg" 
-                     alt="Best Fans of the Season Poster" 
-                     class="w-full h-auto object-cover transform transition duration-700 group-hover:scale-[1.02]">
-            </div>
-
-            <!-- Candidates Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl">
-                
-                <!-- Candidate 1: Luqman Sumba -->
-                <div class="bg-white text-gray-900 rounded-xl shadow-2xl p-6 border-t-8 border-green-600 text-center flex flex-col h-full transform transition hover:-translate-y-1">
-                    <div class="w-32 h-32 mx-auto bg-white rounded-full mb-4 overflow-hidden border-4 border-green-200 shadow-md">
-                        <img src="luqman.jpeg" alt="Luqman Sumba" class="w-full h-full object-cover">
-                    </div>
-                    <h2 class="text-2xl font-black text-green-900 mb-1 uppercase tracking-tight">Luqman Sumba</h2>
-                    <p class="text-green-600 font-bold text-xs mb-4 tracking-widest uppercase">Green Commandos</p>
-                    
-                    <div class="mt-auto mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="text-left">
-                                <span class="block text-xs text-green-600 font-bold uppercase">Total Votes</span>
-                                <span id="votes-001" class="text-2xl font-extrabold text-green-950">0</span>
-                            </div>
-                            <div id="perc-001" class="bg-green-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">
-                                0%
-                            </div>
-                        </div>
-                        <div class="w-full bg-green-200 rounded-full h-3 shadow-inner">
-                            <div id="bar-001" class="bg-green-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <button onclick="openModal('Luqman Sumba', '001')" class="candidate-vote-btn w-full bg-green-600 hover:bg-green-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
-                        Vote Luqman
-                    </button>
-                </div>
-
-                <!-- Candidate 2: Caeser Olwaminabo -->
-                <div class="bg-gray-950 text-white rounded-xl shadow-2xl p-6 border-t-8 border-red-600 text-center relative flex flex-col h-full border border-gray-800 transform transition hover:-translate-y-1">
-                    <div class="w-32 h-32 mx-auto bg-black rounded-full mb-4 overflow-hidden border-4 border-red-600 shadow-md">
-                        <img src="caeser.jpeg" alt="Caeser Olwaminabo" class="w-full h-full object-cover">
-                    </div>
-                    <h2 class="text-2xl font-black text-white mb-1 uppercase tracking-tight">Caeser Olwaminabo</h2>
-                    <p class="text-red-500 font-bold text-xs mb-4 tracking-widest uppercase">Scorpions</p>
-                    
-                    <div class="mt-auto mb-6 bg-black p-4 rounded-lg border border-gray-800">
-                        <div class="flex justify-between items-end mb-2">
-                            <div class="text-left">
-                                <span class="block text-xs text-red-500 font-bold uppercase">Total Votes</span>
-                                <span id="votes-002" class="text-2xl font-extrabold text-white">0</span>
-                            </div>
-                            <div id="perc-002" class="bg-red-600 text-white text-base font-bold px-2.5 py-0.5 rounded-md shadow-sm">
-                                0%
-                            </div>
-                        </div>
-                        <div class="w-full bg-gray-800 rounded-full h-3 shadow-inner">
-                            <div id="bar-002" class="bg-red-600 h-3 rounded-full progress-bar" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <button onclick="openModal('Caeser Olwaminabo', '002')" class="candidate-vote-btn w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-base py-3 px-4 rounded-lg transition duration-200 shadow-lg uppercase tracking-wider">
-                        Vote Caeser
-                    </button>
-                </div>
-
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Automated Payment & Vote Modal -->
-    <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-        <div class="bg-emerald-900 text-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold border border-emerald-700">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-emerald-300 hover:text-white text-3xl font-light">&times;</button>
-            
-            <h3 class="text-2xl font-black text-white mb-2 border-b border-emerald-800 pb-2 uppercase tracking-tight">Automated STK Push</h3>
-            <p class="mb-4 text-emerald-200 text-sm">Voting for: <strong id="modalCandidateName" class="text-poster-gold uppercase"></strong></p>
-
-            <div class="mb-3">
-                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">Number of Votes (1 Vote = KSh 10)</label>
-                <input type="number" id="voteCount" min="1" value="1" oninput="updateCost()" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
-            </div>
-
-            <div class="mb-4">
-                <label class="block text-xs font-bold text-emerald-300 mb-1 uppercase">M-Pesa Phone Number (e.g. 0712345678)</label>
-                <input type="tel" id="voterPhone" placeholder="0712345678" class="w-full px-3 py-2 bg-emerald-950 border border-emerald-700 rounded-lg focus:ring-2 focus:ring-poster-gold text-base font-bold text-white">
-            </div>
-
-            <div class="bg-emerald-950 p-3 rounded-lg mb-4 text-xs text-emerald-200 border border-emerald-800 flex justify-between items-center">
-                <span class="font-bold uppercase">Total Amount:</span>
-                <span id="instructionCost" class="text-poster-gold font-black text-base">KSh 10</span>
-            </div>
-
-            <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
-                Pay &amp; Vote Automatically
-            </button>
-
-            <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
-        </div>
-    </div>
-
-    <script>
-        let currentCandidateId = '';
-        const COST_PER_VOTE = 10;
-        let isVotingOpen = true;
-
-        // -------------------------
-        // 1. COUNTDOWN TIMER LOGIC
-        // -------------------------
-        const VOTING_END_DATE = new Date("August 30, 2026 23:59:59").getTime();
-
-        const timerInterval = setInterval(() => {
-            const now = new Date().getTime();
-            const timeRemaining = VOTING_END_DATE - now;
-            const timerDisplay = document.getElementById("timer-display");
-
-            if (timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                isVotingOpen = false;
-                timerDisplay.innerText = "VOTING CLOSED";
-                
-                const timerContainer = document.getElementById("countdown-timer");
-                timerContainer.classList.replace("bg-red-950", "bg-gray-800");
-                timerContainer.classList.replace("border-red-700", "border-gray-600");
-                timerContainer.querySelector(".timer-label").innerText = "STATUS:";
-                timerContainer.querySelector(".timer-label").classList.replace("text-red-400", "text-gray-400");
-                
-                lockVotingSystem();
-                return;
-            }
-
-            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-            timerDisplay.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }, 1000);
-
-        function lockVotingSystem() {
-            const voteButtons = document.querySelectorAll('.candidate-vote-btn');
-            voteButtons.forEach(btn => {
-                btn.disabled = true;
-                btn.innerText = "Voting Closed";
-                btn.classList.remove("hover:bg-green-700", "hover:bg-red-700", "bg-green-600", "bg-red-600");
-                btn.classList.add("bg-gray-700", "text-gray-400", "cursor-not-allowed", "opacity-80");
-                btn.onclick = null; 
-            });
-
-            const payBtn = document.getElementById("submitBtn");
-            if(payBtn) {
-                payBtn.disabled = true;
-                payBtn.innerText = "Voting Closed";
-                payBtn.classList.remove("hover:bg-yellow-400", "bg-poster-gold", "text-emerald-950");
-                payBtn.classList.add("bg-gray-700", "text-gray-400", "cursor-not-allowed", "opacity-80");
-                payBtn.onclick = null; 
-            }
-        }
-
-        // -------------------------
-        // 2. CORE VOTING LOGIC
-        // -------------------------
-        let votesData = JSON.parse(localStorage.getItem('fan_votes_data')) || {
-            '001': 0,
-            '002': 0
+        // --- YOUR FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4MwMp_M7n74eCwMqrWW8CG983-qoeCTA",
+            authDomain: "fanvote-b8eec.firebaseapp.com",
+            databaseURL: "https://fanvote-b8eec-default-rtdb.firebaseio.com",
+            projectId: "fanvote-b8eec",
+            storageBucket: "fanvote-b8eec.appspot.com",
+            messagingSenderId: "668583002229",
+            appId: "1:668583002229:web:5ffa44d78fcc36f118b83c"
         };
 
-        updateDisplayStats();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        function openModal(name, id) {
-            if (!isVotingOpen) return; 
-            
-            document.getElementById('modalCandidateName').innerText = name;
-            currentCandidateId = id;
-            document.getElementById('voteModal').classList.remove('hidden');
-            resetModal();
-        }
+        const COST_PER_VOTE = 10;
+        let currentCandidateId = '';
+        let isVotingOpen = true;
 
-        function closeModal() {
-            document.getElementById('voteModal').classList.add('hidden');
-        }
+        // --- REAL-TIME DATABASE LISTENER ---
+        const votesRef = ref(db, 'votes');
+        onValue(votesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                updateDisplayStats(data);
+            }
+        });
 
-        function updateCost() {
-            const votes = parseInt(document.getElementById('voteCount').value) || 1;
-            const total = votes * COST_PER_VOTE;
-            document.getElementById('instructionCost').innerText = `KSh ${total}`;
-        }
-
-        function resetModal() {
-            document.getElementById('voteCount').value = 1;
-            document.getElementById('voterPhone').value = '';
-            document.getElementById('statusMessage').classList.add('hidden');
-            updateCost();
-        }
-
-        function updateDisplayStats() {
+        // --- DISPLAY LOGIC ---
+        function updateDisplayStats(votesData) {
             const totalVotes = Object.values(votesData).reduce((a, b) => a + b, 0);
             document.getElementById('total-votes-display').innerText = totalVotes.toLocaleString();
 
             for (const [id, count] of Object.entries(votesData)) {
                 const perc = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
-                if(document.getElementById(`votes-${id}`)) {
-                    document.getElementById(`votes-${id}`).innerText = count.toLocaleString();
-                    document.getElementById(`perc-${id}`).innerText = `${perc}%`;
-                    document.getElementById(`bar-${id}`).style.width = `${perc}%`;
-                }
+                if(document.getElementById(`votes-${id}`)) document.getElementById(`votes-${id}`).innerText = count.toLocaleString();
+                if(document.getElementById(`perc-${id}`)) document.getElementById(`perc-${id}`).innerText = `${perc}%`;
+                if(document.getElementById(`bar-${id}`)) document.getElementById(`bar-${id}`).style.width = `${perc}%`;
             }
         }
 
-        // -------------------------
-        // 3. PAYSTACK AUTOMATION
-        // -------------------------
-        function payWithPaystack() {
-            if (!isVotingOpen) return; 
-
+        // --- PAYMENT & VOTE LOGIC ---
+        window.payWithPaystack = function() {
             const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
             const voterPhone = document.getElementById('voterPhone').value.trim();
             const candidateName = document.getElementById('modalCandidateName').innerText;
             const statusDiv = document.getElementById('statusMessage');
 
-            if (!voterPhone || voterPhone.length < 10) {
-                alert("Please enter a valid M-Pesa phone number to receive the STK push.");
-                return;
-            }
-
-            const totalAmountInCents = votesInput * COST_PER_VOTE * 100;
-            const generatedEmail = `voter_${new Date().getTime()}@fanvote.com`;
-
-            statusDiv.classList.remove('hidden');
-            statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-poster-gold border-emerald-700";
-            statusDiv.innerText = "Initializing M-Pesa STK push... Check your phone.";
-
             let handler = PaystackPop.setup({
                 key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', 
-                email: generatedEmail,
-                amount: totalAmountInCents,
+                email: `voter_${new Date().getTime()}@fanvote.com`,
+                amount: votesInput * COST_PER_VOTE * 100,
                 currency: 'KES',
-                channels: ['mobile_money'],
-                metadata: {
-                    custom_fields: [
-                        {
-                            display_name: "Candidate",
-                            variable_name: "candidate_name",
-                            value: candidateName
-                        },
-                        {
-                            display_name: "Votes",
-                            variable_name: "vote_count",
-                            value: votesInput
-                        }
-                    ]
-                },
                 callback: function(response) {
-                    votesData[currentCandidateId] = (votesData[currentCandidateId] || 0) + votesInput;
-                    localStorage.setItem('fan_votes_data', JSON.stringify(votesData));
-
-                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-emerald-300 border-emerald-700";
-                    statusDiv.innerText = `Success! Ref: ${response.reference}. Votes recorded!`;
-
-                    updateDisplayStats();
-
-                    setTimeout(() => {
-                        closeModal();
-                    }, 3000);
-                },
-                onClose: function() {
-                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-red-950 text-red-300 border-red-800";
-                    statusDiv.innerText = "Payment window closed.";
+                    const candidateRef = ref(db, `votes/${currentCandidateId}`);
+                    get(candidateRef).then((snapshot) => {
+                        const currentCount = snapshot.exists() ? snapshot.val() : 0;
+                        set(candidateRef, currentCount + votesInput).then(() => {
+                            statusDiv.innerText = "Success! Votes recorded!";
+                            setTimeout(() => { window.closeModal(); }, 2000);
+                        });
+                    });
                 }
             });
-
             handler.openIframe();
         }
+
+        // Global UI Functions
+        window.openModal = (name, id) => { currentCandidateId = id; document.getElementById('modalCandidateName').innerText = name; document.getElementById('voteModal').classList.remove('hidden'); }
+        window.closeModal = () => document.getElementById('voteModal').classList.add('hidden');
+        window.updateCost = () => document.getElementById('instructionCost').innerText = `KSh ${document.getElementById('voteCount').value * COST_PER_VOTE}`;
     </script>
+</head>
+<body class="bg-emerald-950 font-sans text-gray-100 min-h-screen">
+    <!-- ... [Rest of your HTML UI code remains the same] ... -->
+    <!-- Ensure your IDs (votes-001, votes-002, etc) remain unchanged in the HTML body -->
 </body>
 </html>
