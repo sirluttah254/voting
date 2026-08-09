@@ -31,7 +31,6 @@
 
         const COST_PER_VOTE = 10;
         let currentCandidateId = '';
-        let isVotingOpen = true;
 
         // --- REAL-TIME DATABASE LISTENER ---
         const votesRef = ref(db, 'votes');
@@ -55,7 +54,7 @@
             }
         }
 
-        // --- STREAMLINED PAYMENT & VOTE LOGIC ---
+        // --- PAYSTACK PAYMENT & VERIFIED VOTE LOGIC ---
         window.payWithPaystack = function() {
             const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
             let voterPhone = document.getElementById('voterPhone').value.trim();
@@ -67,26 +66,17 @@
                 return;
             }
 
-            // Format phone number for Paystack mobile money (ensure it starts with country code or proper local format)
-            if (voterPhone.startsWith('0')) {
-                voterPhone = '+254' + voterPhone.substring(1);
-            } else if (!voterPhone.startsWith('+')) {
-                voterPhone = '+' + voterPhone;
-            }
-
             statusDiv.classList.remove('hidden');
             statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-yellow-400 border-emerald-700";
-            statusDiv.innerText = "Triggering M-Pesa STK push to your phone...";
+            statusDiv.innerText = "Connecting to M-Pesa gateway...";
 
             let handler = PaystackPop.setup({
                 key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', 
                 email: `voter_${new Date().getTime()}@fanvote.com`,
                 amount: votesInput * COST_PER_VOTE * 100,
                 currency: 'KES',
-                mobile_money: {
-                    phone: voterPhone,
-                    provider: "mpesa"
-                },
+                channels: ['mobile_money'],
+                phone: voterPhone,
                 metadata: {
                     custom_fields: [
                         { display_name: "Candidate", variable_name: "candidate_name", value: candidateName },
@@ -94,19 +84,22 @@
                     ]
                 },
                 callback: function(response) {
+                    // PAYMENT SUCCESSFUL -> NOW COUNT THE VOTES IN REAL-TIME
+                    statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-emerald-300 border-emerald-700";
+                    statusDiv.innerText = "Payment successful! Recording votes...";
+
                     const candidateRef = ref(db, `votes/${currentCandidateId}`);
                     get(candidateRef).then((snapshot) => {
                         const currentCount = snapshot.exists() ? snapshot.val() : 0;
                         set(candidateRef, currentCount + votesInput).then(() => {
-                            statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-emerald-300 border-emerald-700";
-                            statusDiv.innerText = "Success! Votes recorded!";
+                            statusDiv.innerText = "Success! Votes added!";
                             setTimeout(() => { window.closeModal(); }, 2000);
                         });
                     });
                 },
                 onClose: function() {
                     statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-red-950 text-red-300 border-red-800";
-                    statusDiv.innerText = "Payment cancelled or window closed.";
+                    statusDiv.innerText = "Payment window closed. Vote not counted.";
                 }
             });
 
@@ -114,9 +107,17 @@
         }
 
         // Global UI Functions
-        window.openModal = (name, id) => { currentCandidateId = id; document.getElementById('modalCandidateName').innerText = name; document.getElementById('voteModal').classList.remove('hidden'); resetModal(); }
+        window.openModal = (name, id) => { 
+            currentCandidateId = id; 
+            document.getElementById('modalCandidateName').innerText = name; 
+            document.getElementById('voteModal').classList.remove('hidden'); 
+            resetModal(); 
+        }
         window.closeModal = () => document.getElementById('voteModal').classList.add('hidden');
-        window.updateCost = () => document.getElementById('instructionCost').innerText = `KSh ${document.getElementById('voteCount').value * COST_PER_VOTE}`;
+        window.updateCost = () => {
+            const count = document.getElementById('voteCount').value;
+            document.getElementById('instructionCost').innerText = `KSh ${count * COST_PER_VOTE}`;
+        }
         function resetModal() {
             document.getElementById('voteCount').value = 1;
             document.getElementById('voterPhone').value = '';
@@ -231,7 +232,7 @@
         <div class="bg-emerald-900 text-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold border border-emerald-700">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-emerald-300 hover:text-white text-3xl font-light">&times;</button>
             
-            <h3 class="text-2xl font-black text-white mb-2 border-b border-emerald-800 pb-2 uppercase tracking-tight">Automated STK Push</h3>
+            <h3 class="text-2xl font-black text-white mb-2 border-b border-emerald-800 pb-2 uppercase tracking-tight">M-Pesa Express Checkout</h3>
             <p class="mb-4 text-emerald-200 text-sm">Voting for: <strong id="modalCandidateName" class="text-poster-gold uppercase"></strong></p>
 
             <div class="mb-3">
@@ -250,7 +251,7 @@
             </div>
 
             <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
-                Pay &amp; Vote Automatically
+                Pay &amp; Count Vote Automatically
             </button>
 
             <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
