@@ -55,10 +55,10 @@
             }
         }
 
-        // --- PAYMENT & VOTE LOGIC ---
+        // --- STREAMLINED PAYMENT & VOTE LOGIC ---
         window.payWithPaystack = function() {
             const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
-            const voterPhone = document.getElementById('voterPhone').value.trim();
+            let voterPhone = document.getElementById('voterPhone').value.trim();
             const candidateName = document.getElementById('modalCandidateName').innerText;
             const statusDiv = document.getElementById('statusMessage');
 
@@ -67,16 +67,32 @@
                 return;
             }
 
+            // Format phone number for Paystack mobile money (ensure it starts with country code or proper local format)
+            if (voterPhone.startsWith('0')) {
+                voterPhone = '+254' + voterPhone.substring(1);
+            } else if (!voterPhone.startsWith('+')) {
+                voterPhone = '+' + voterPhone;
+            }
+
             statusDiv.classList.remove('hidden');
             statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-emerald-950 text-yellow-400 border-emerald-700";
-            statusDiv.innerText = "Initializing STK push...";
+            statusDiv.innerText = "Triggering M-Pesa STK push to your phone...";
 
             let handler = PaystackPop.setup({
                 key: 'pk_live_e49dd0b7103780b1b4f7eb6baf2493cc15e199fe', 
                 email: `voter_${new Date().getTime()}@fanvote.com`,
                 amount: votesInput * COST_PER_VOTE * 100,
                 currency: 'KES',
-                channels: ['mobile_money'],
+                mobile_money: {
+                    phone: voterPhone,
+                    provider: "mpesa"
+                },
+                metadata: {
+                    custom_fields: [
+                        { display_name: "Candidate", variable_name: "candidate_name", value: candidateName },
+                        { display_name: "Votes", variable_name: "vote_count", value: votesInput }
+                    ]
+                },
                 callback: function(response) {
                     const candidateRef = ref(db, `votes/${currentCandidateId}`);
                     get(candidateRef).then((snapshot) => {
@@ -90,9 +106,10 @@
                 },
                 onClose: function() {
                     statusDiv.className = "mt-3 text-center text-xs font-bold p-3 rounded-lg border bg-red-950 text-red-300 border-red-800";
-                    statusDiv.innerText = "Payment window closed.";
+                    statusDiv.innerText = "Payment cancelled or window closed.";
                 }
             });
+
             handler.openIframe();
         }
 
