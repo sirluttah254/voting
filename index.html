@@ -156,6 +156,14 @@
             <p class="text-lg md:text-xl font-bold text-emerald-950 tracking-widest uppercase bg-poster-gold py-2 px-6 inline-block rounded-full shadow-lg">
                 Vote For Your Favourite!!!
             </p>
+            
+            <!-- Countdown Timer Display -->
+            <div class="mt-6 p-4 bg-emerald-900 border border-emerald-700 rounded-lg inline-block shadow-lg">
+                <p class="text-emerald-300 text-sm font-bold uppercase tracking-widest mb-1">Voting Closes In:</p>
+                <div id="countdown-display" class="text-2xl md:text-3xl font-black text-white tracking-widest">
+                    --d --h --m --s
+                </div>
+            </div>
         </div>
 
         <div class="flex flex-col items-center gap-8 relative z-10">
@@ -244,5 +252,39 @@
             <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
         </div>
     </div>
+
+    <!-- Countdown Logic -->
+    <script>
+        // Set deadline to exactly 21 days from August 9, 2026 (Target: August 30, 2026 23:59:59)
+        const deadline = new Date("August 30, 2026 23:59:59").getTime();
+
+        const countdownTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const timeRemaining = deadline - now;
+
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            const display = document.getElementById("countdown-display");
+            
+            if (display) {
+                // Formatting to keep double digits
+                const fHours = hours < 10 ? "0" + hours : hours;
+                const fMinutes = minutes < 10 ? "0" + minutes : minutes;
+                const fSeconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.innerHTML = `${days}d ${fHours}h ${fMinutes}m ${fSeconds}s`;
+
+                // If the countdown is over, display message
+                if (timeRemaining < 0) {
+                    clearInterval(countdownTimer);
+                    display.innerHTML = "VOTING CLOSED";
+                    display.classList.add("text-red-500");
+                }
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
