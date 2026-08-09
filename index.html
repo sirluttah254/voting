@@ -54,6 +54,83 @@
             }
         }
 
+        // --- 21-DAY DEADLINE COUNTDOWN TIMER LOGIC ---
+        // Sets target date 21 days from when the page loads
+        const deadline = new Date().getTime() + (21 * 24 * 60 * 60 * 1000);
+
+        function updateDeadlineCountdown() {
+            const now = new Date().getTime();
+            const distance = deadline - now;
+
+            if (distance < 0) {
+                document.getElementById('deadline-timer').innerText = "VOTING CLOSED";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60))Ah, I completely understand now! You are talking about the **voting deadline countdown timer** (the 21-day countdown) that shows how much time is left before the voting closes. 
+
+Here is the complete code with both the streamlined Paystack checkout process and the **21-day deadline countdown timer** fully restored and integrated at the top:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEST FANS OF THE SEASON</title>
+    <!-- Tailwind CSS -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <!-- Paystack Inline JS -->
+    <script src="[https://js.paystack.co/v1/inline.js](https://js.paystack.co/v1/inline.js)"></script>
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js)";
+        import { getDatabase, ref, onValue, set, get } from "[https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js](https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js)";
+
+        // --- YOUR FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4MwMp_M7n74eCwMqrWW8CG983-qoeCTA",
+            authDomain: "fanvote-b8eec.firebaseapp.com",
+            databaseURL: "[https://fanvote-b8eec-default-rtdb.firebaseio.com](https://fanvote-b8eec-default-rtdb.firebaseio.com)",
+            projectId: "fanvote-b8eec",
+            storageBucket: "fanvote-b8eec.appspot.com",
+            messagingSenderId: "668583002229",
+            appId: "1:668583002229:web:5ffa44d78fcc36f118b83c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const COST_PER_VOTE = 10;
+        let currentCandidateId = '';
+
+        // --- REAL-TIME DATABASE LISTENER ---
+        const votesRef = ref(db, 'votes');
+        onValue(votesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                updateDisplayStats(data);
+            }
+        });
+
+        // --- DISPLAY LOGIC ---
+        function updateDisplayStats(votesData) {
+            const totalVotes = Object.values(votesData).reduce((a, b) => a + b, 0);
+            document.getElementById('total-votes-display').innerText = totalVotes.toLocaleString();
+
+            for (const [id, count] of Object.entries(votesData)) {
+                const perc = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+                if(document.getElementById(`votes-${id}`)) document.getElementById(`votes-${id}`).innerText = count.toLocaleString();
+                if(document.getElementById(`perc-${id}`)) document.getElementById(`perc-${id}`).innerText = `${perc}%`;
+                if(document.getElementById(`bar-${id}`)) document.getElementById(`bar-${id}`).style.width = `${perc}%`;
+            }
+        }
+
         // --- PAYSTACK CHECKOUT & VOTE LOGIC ---
         window.payWithPaystack = function() {
             const votesInput = parseInt(document.getElementById('voteCount').value) || 1;
@@ -85,8 +162,18 @@
                     get(candidateRef).then((snapshot) => {
                         const currentCount = snapshot.exists() ? snapshot.val() : 0;
                         set(candidateRef, currentCount + votesInput).then(() => {
-                            statusDiv.innerText = "Success! Votes updated!";
-                            setTimeout(() => { window.closeModal(); }, 2000);
+                            let countdown = 2;
+                            statusDiv.innerText = `Success! Votes updated! Closing in ${countdown}s...`;
+                            
+                            const timer = setInterval(() => {
+                                countdown--;
+                                if (countdown > 0) {
+                                    statusDiv.innerText = `Success! Votes updated! Closing in ${countdown}s...`;
+                                } else {
+                                    clearInterval(timer);
+                                    window.closeModal();
+                                }
+                            }, 1000);
                         });
                     });
                 },
@@ -153,9 +240,23 @@
             <h1 class="text-3xl md:text-5xl font-black text-white tracking-wider uppercase mb-3 drop-shadow-md">
                 The Game Isn't Just On The Pitch
             </h1>
-            <p class="text-lg md:text-xl font-bold text-emerald-950 tracking-widest uppercase bg-poster-gold py-2 px-6 inline-block rounded-full shadow-lg">
+            <p class="text-lg md:text-xl font-bold text-emerald-950 tracking-widest uppercase bg-poster-gold py-2 px-6 inline-block rounded-full shadow-lg mb-6">
                 Vote For Your Favourite!!!
             </p>
+
+            <!-- 21-Day Deadline Countdown Timer -->
+            <div class="max-w-xl mx-auto bg-emerald-900 border border-emerald-700 p-4 rounded-xl shadow-xl">
+                <p class="text-xs text-poster-gold font-bold uppercase tracking-widest mb-2">Voting Closes In:</p>
+                <div id="countdown-timer" class="flex justify-center gap-4 text-white font-black text-xl md:text-2xl">
+                    <div><span id="days">21</span> <span class="block text-xs font-normal text-emerald-300 uppercase">Days</span></div>
+                    <div class="text-poster-gold">:</div>
+                    <div><span id="hours">00</span> <span class="block text-xs font-normal text-emerald-300 uppercase">Hours</span></div>
+                    <div class="text-poster-gold">:</div>
+                    <div><span id="minutes">00</span> <span class="block text-xs font-normal text-emerald-300 uppercase">Mins</span></div>
+                    <div class="text-poster-gold">:</div>
+                    <div><span id="seconds">00</span> <span class="block text-xs font-normal text-emerald-300 uppercase">Secs</span></div>
+                </div>
+            </div>
         </div>
 
         <div class="flex flex-col items-center gap-8 relative z-10">
@@ -219,7 +320,7 @@
         </div>
     </main>
 
-    <!-- Modal (Phone number field completely removed) -->
+    <!-- Modal -->
     <div id="voteModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
         <div class="bg-emerald-900 text-white rounded-xl shadow-2xl max-w-md w-full p-6 relative border-t-4 border-poster-gold border border-emerald-700">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-emerald-300 hover:text-white text-3xl font-light">&times;</button>
@@ -238,11 +339,37 @@
             </div>
 
             <button onclick="payWithPaystack()" id="submitBtn" class="w-full bg-poster-gold hover:bg-yellow-400 text-emerald-950 font-black text-base py-3 px-4 rounded-lg transition duration-200 shadow-xl uppercase tracking-widest mt-2">
-                Pay & Vote
+                Proceed to Secure Payment
             </button>
 
             <div id="statusMessage" class="hidden mt-3 text-center text-xs font-bold p-3 rounded-lg border"></div>
         </div>
     </div>
+
+    <!-- Script to handle the 21-day countdown ticker -->
+    <script>
+        // Sets the deadline 21 days from now dynamically
+        const deadline = new Date().getTime() + (21 * 24 * 60 * 60 * 1000);
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const t = deadline - now;
+
+            const days = Math.floor(t / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((t % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            if (t < 0) {
+                clearInterval(x);
+                document.getElementById("countdown-timer").innerHTML = "<span class='text-red-500 uppercase'>Voting Closed</span>";
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
